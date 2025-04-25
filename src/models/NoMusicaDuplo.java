@@ -18,4 +18,8 @@ public class NoMusicaDuplo {
         this.ant = null;
         this.prox = null;
     }
+
+    public Musica getMusica() {
+        return musica;
+    }
 }

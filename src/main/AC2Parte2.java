@@ -1,52 +1,48 @@
 package main;
 
-import models.ListaDupla;
-import models.ListaEncadeada;
-import models.Musica;
+import models.*;
 
 import javax.swing.JOptionPane;
+import java.util.jar.JarOutputStream;
 
 /**
- *
  * @author Kauê Felippe Tiburcio - RA 247721
- *         Centro Universitário FACENS - 2025
- * */
+ * Centro Universitário FACENS - 2025
+ */
 public class AC2Parte2 {
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        ListaEncadeada ListaReproducao = new ListaEncadeada();
+        ListaEncadeada listaReproducao = new ListaEncadeada();
         ListaDupla historico = new ListaDupla();
 
-        int opcao;
-
         do {
-            String menu = """
-                🎵 Estação de Rádio - Sistema de Playback
+            String[] options = {
+                    "Adicionar música à fila",
+                    "Tocar próxima música",
+                    "Ver fila de reprodução",
+                    "Ver música atual",
+                    "Ver histórico",
+                    "Navegar histórico",
+                    "Sair"
+            };
 
-                1. Adicionar música à fila
-                2. Tocar próxima música
-                3. Ver fila de reprodução
-                4. Ver música atual
-                5. Navegar histórico
-                0. Sair
-
-                Escolha uma opção:
-                """;
-
-            try {
-                String input = JOptionPane.showInputDialog(menu);
-                if (input == null) break; // Usuário clicou em cancelar
-                opcao = Integer.parseInt(input);
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, "Entrada inválida!");
-                continue;
-            }
+            int opcao = JOptionPane.showOptionDialog(
+                    null,
+                    "🎵 Estação de Rádio - Sistema de Playback\n\n" +
+                            "Escolha uma opção:",
+                    "Menu",
+                    JOptionPane.DEFAULT_OPTION,
+                    JOptionPane.PLAIN_MESSAGE,
+                    null,
+                    options,
+                    options[0]
+            );
 
             switch (opcao) {
-                case 1 -> {
+                case 0 -> {
                     String titulo = JOptionPane.showInputDialog("Título da música:");
                     String artista = JOptionPane.showInputDialog("Artista:");
                     int duracao;
@@ -58,22 +54,36 @@ public class AC2Parte2 {
                     }
 
                     Musica nova = new Musica(titulo, artista, duracao);
-                    // TODO: Adicionar à fila
+                    listaReproducao.insereNo_fim(new NoMusica(nova));
                     JOptionPane.showMessageDialog(null, "Música adicionada à fila!");
                 }
 
+                case 1 -> {
+                    try {
+                        Musica ultimaMusica = listaReproducao.getPrimeiro().getMusica();
+                        historico.insereNo(new NoMusicaDuplo(ultimaMusica));
+                        listaReproducao.excluiNo(ultimaMusica.getTitulo());
+
+                        JOptionPane.showMessageDialog(null, "Tocando: \n" + ultimaMusica);
+                    } catch (Exception e) {
+                        JOptionPane.showMessageDialog(null, "A lista de reprodução está vazia!");
+                    }
+                }
+
                 case 2 -> {
-                    // TODO: Tocar próxima música
-                    // Exemplo: JOptionPane.showMessageDialog(null, "Tocando: " + musica.toString());
+                    JOptionPane.showMessageDialog(null, "Fila de reprodução (Próximas):\n" + listaReproducao.exibeLista());
                 }
 
                 case 3 -> {
-                    // TODO: Listar músicas na Lista de Reproducao
-                    // Exemplo: JOptionPane.showMessageDialog(null, "Fila:\n" + fila.listar());
+                    try {
+                        JOptionPane.showMessageDialog(null, "Música atual:\n" + historico.getUltimo().getMusica());
+                    } catch (Exception e) {
+                        JOptionPane.showMessageDialog(null, "Não há músicas tocando no momento.");
+                    }
                 }
 
                 case 4 -> {
-                    // TODO: Mostrar música atual
+                    JOptionPane.showMessageDialog(null, historico.ExibeLista());
                 }
 
                 case 5 -> {
@@ -81,19 +91,38 @@ public class AC2Parte2 {
                     if (escolha == null) break;
 
                     if (escolha.equalsIgnoreCase("A")) {
-                        // TODO: ir para anterior
+                        if (historico.getNumero_nos() < 2) {
+                            JOptionPane.showMessageDialog(null, "Não há músicas anteriores no histórico.");
+                            break;
+                        }
+                        Musica musica = historico.getUltimo().getMusica();
+                        historico.excluiNo(historico.getNumero_nos() - 1);
+                        listaReproducao.insereNo_inicio(new NoMusica(musica));
+
+                        JOptionPane.showMessageDialog(null, "Música anterior:\n" + historico.getUltimo().getMusica());
                     } else if (escolha.equalsIgnoreCase("P")) {
-                        // TODO: ir para próxima
+                        try {
+                            Musica proximaMusica = listaReproducao.getPrimeiro().getMusica();
+                            historico.insereNo(new NoMusicaDuplo(proximaMusica));
+                            listaReproducao.excluiNo(proximaMusica.getTitulo());
+
+                            JOptionPane.showMessageDialog(null, "Próxima música:\n" + historico.getUltimo().getMusica());
+                        } catch (Exception e) {
+                            JOptionPane.showMessageDialog(null, "Não há músicas seguintes no histórico.");
+                        }
                     } else {
                         JOptionPane.showMessageDialog(null, "Opção inválida.");
                     }
                 }
 
-                case 0 -> JOptionPane.showMessageDialog(null, "Encerrando o sistema...");
+                case 6 -> {
+                    JOptionPane.showMessageDialog(null, "Encerrando o sistema...");
+                    return;
+                }
 
                 default -> JOptionPane.showMessageDialog(null, "Opção inválida!");
             }
 
         } while (true);
     }
-    }
+}

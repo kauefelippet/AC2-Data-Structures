@@ -16,4 +16,8 @@ public class NoMusica {
         this.musica = musica;
         this.prox = null;
     }
+
+    public Musica getMusica() {
+        return musica;
+    }
 }

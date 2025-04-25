@@ -5,19 +5,18 @@
 package models;
 
 /**
- *
  * @author bruno
  */
 public class ListaDupla {
-    NoMusicaDuplo primeiro, ultimo;
-    int numero_nos;
-    
-    public ListaDupla(){
-    primeiro = ultimo = null;
-    numero_nos = 0;
+    private NoMusicaDuplo primeiro, ultimo;
+    private int numero_nos;
+
+    public ListaDupla() {
+        primeiro = ultimo = null;
+        numero_nos = 0;
     }
-    
-    void insereNo (NoMusicaDuplo novoNo){
+
+    public void insereNo(NoMusicaDuplo novoNo) {
         novoNo.prox = null;
         novoNo.ant = ultimo;
         if (primeiro == null)
@@ -27,21 +26,23 @@ public class ListaDupla {
         ultimo = novoNo;
         numero_nos++;
     }
-    NoMusicaDuplo pegarNo (int indice){
+
+    public NoMusicaDuplo pegarNo(int indice) {
         NoMusicaDuplo temp_no = primeiro;
         for (int i = 0; (i < indice) && (temp_no != null); i++)
-        temp_no = temp_no.prox;
+            temp_no = temp_no.prox;
         return temp_no;
     }
-    void incluiNo (NoMusicaDuplo novoNo, int indice){
-        NoMusicaDuplo temp_no = pegarNo (indice);
+
+    public void incluiNo(NoMusicaDuplo novoNo, int indice) {
+        NoMusicaDuplo temp_no = pegarNo(indice);
         novoNo.prox = temp_no;
-        if (novoNo.prox != null){
-        novoNo.ant = temp_no.ant;
-        novoNo.prox.ant = novoNo;
+        if (novoNo.prox != null) {
+            novoNo.ant = temp_no.ant;
+            novoNo.prox.ant = novoNo;
         } else {
-        novoNo.ant = ultimo;
-        ultimo = novoNo;
+            novoNo.ant = ultimo;
+            ultimo = novoNo;
         }
         if (indice == 0)
             primeiro = novoNo;
@@ -49,29 +50,46 @@ public class ListaDupla {
             novoNo.ant.prox = novoNo;
         numero_nos++;
     }
-    void excluiNo (int indice){
-        if (indice == 0){
+
+    public void excluiNo(int indice) {
+        if (indice == 0) {
             primeiro = primeiro.prox;
-        if (primeiro != null)
-            primeiro.ant = null;
-        }else{
-            NoMusicaDuplo temp_no = pegarNo (indice);
+            if (primeiro != null) {
+                primeiro.ant = null;
+            } else {
+                ultimo = null;
+            }
+        } else {
+            NoMusicaDuplo temp_no = pegarNo(indice);
             temp_no.ant.prox = temp_no.prox;
-            if (temp_no != ultimo){
+            if (temp_no.prox != null) {
                 temp_no.prox.ant = temp_no.ant;
-            }else{
-                ultimo = temp_no;
+            } else {
+                ultimo = temp_no.ant;
             }
         }
         numero_nos--;
     }
-    String ExibeLista(){
-        String valores="As múscas existentes no histórico são:\n";
+
+    public String ExibeLista() {
+        StringBuilder valores = new StringBuilder("Histórico:\n");
         NoMusicaDuplo temp_no = primeiro;
-        while (temp_no != null){
-            valores += temp_no.toString() + "\n";
+        while (temp_no != null) {
+            valores.append(temp_no.getMusica()).append("\n");
             temp_no = temp_no.prox;
         }
-        return valores;
+        return valores.toString();
+    }
+
+    public NoMusicaDuplo getPrimeiro() {
+        return primeiro;
+    }
+
+    public NoMusicaDuplo getUltimo() {
+        return ultimo;
+    }
+
+    public int getNumero_nos() {
+        return numero_nos;
     }
 }
