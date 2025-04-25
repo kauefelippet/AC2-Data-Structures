@@ -31,25 +31,33 @@ public class ListaDupla {
 
     public void navegarHistorico(ListaEncadeada listaReproducao, String escolha) {
         if (escolha.equalsIgnoreCase("A")) {
-            if (numero_nos < 2) {
-                JOptionPane.showMessageDialog(null, "Não há músicas anteriores no histórico.");
-                return;
-            }
-            Musica musica = ultimo.getMusica();
-            excluiNo(numero_nos - 1);
-            listaReproducao.insereNo_inicio(new NoMusica(musica));
-            JOptionPane.showMessageDialog(null, "Música anterior:\n" + ultimo.getMusica());
+            anterior(listaReproducao);
         } else if (escolha.equalsIgnoreCase("P")) {
-            try {
-                Musica proximaMusica = listaReproducao.getPrimeiro().getMusica();
-                insereNo(new NoMusicaDuplo(proximaMusica));
-                listaReproducao.excluiNo(proximaMusica.getTitulo());
-                JOptionPane.showMessageDialog(null, "Próxima música:\n" + ultimo.getMusica());
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, "Não há músicas seguintes no histórico.");
-            }
+            proximo(listaReproducao);
         } else {
             JOptionPane.showMessageDialog(null, "Opção inválida.");
+        }
+    }
+
+    private void anterior(ListaEncadeada listaReproducao) {
+        if (numero_nos < 2) {
+            JOptionPane.showMessageDialog(null, "Não há músicas anteriores no histórico.");
+            return;
+        }
+        Musica musica = ultimo.getMusica();
+        excluiNo(numero_nos - 1);
+        listaReproducao.insereNo_inicio(new NoMusica(musica));
+        JOptionPane.showMessageDialog(null, "Música anterior:\n" + ultimo.getMusica());
+    }
+
+    private void proximo(ListaEncadeada listaReproducao) {
+        try {
+            Musica proximaMusica = listaReproducao.getPrimeiro().getMusica();
+            insereNo(new NoMusicaDuplo(proximaMusica));
+            listaReproducao.excluiNo(proximaMusica.getTitulo());
+            JOptionPane.showMessageDialog(null, "Próxima música:\n" + ultimo.getMusica());
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Não há músicas seguintes no histórico.");
         }
     }
 
