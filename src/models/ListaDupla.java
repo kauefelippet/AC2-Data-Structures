@@ -4,6 +4,8 @@
  */
 package models;
 
+import javax.swing.*;
+
 /**
  * @author bruno
  */
@@ -27,28 +29,28 @@ public class ListaDupla {
         numero_nos++;
     }
 
-    public NoMusicaDuplo pegarNo(int indice) {
-        NoMusicaDuplo temp_no = primeiro;
-        for (int i = 0; (i < indice) && (temp_no != null); i++)
-            temp_no = temp_no.prox;
-        return temp_no;
-    }
-
-    public void incluiNo(NoMusicaDuplo novoNo, int indice) {
-        NoMusicaDuplo temp_no = pegarNo(indice);
-        novoNo.prox = temp_no;
-        if (novoNo.prox != null) {
-            novoNo.ant = temp_no.ant;
-            novoNo.prox.ant = novoNo;
+    public void navegarHistorico(ListaEncadeada listaReproducao, String escolha) {
+        if (escolha.equalsIgnoreCase("A")) {
+            if (numero_nos < 2) {
+                JOptionPane.showMessageDialog(null, "Não há músicas anteriores no histórico.");
+                return;
+            }
+            Musica musica = ultimo.getMusica();
+            excluiNo(numero_nos - 1);
+            listaReproducao.insereNo_inicio(new NoMusica(musica));
+            JOptionPane.showMessageDialog(null, "Música anterior:\n" + ultimo.getMusica());
+        } else if (escolha.equalsIgnoreCase("P")) {
+            try {
+                Musica proximaMusica = listaReproducao.getPrimeiro().getMusica();
+                insereNo(new NoMusicaDuplo(proximaMusica));
+                listaReproducao.excluiNo(proximaMusica.getTitulo());
+                JOptionPane.showMessageDialog(null, "Próxima música:\n" + ultimo.getMusica());
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Não há músicas seguintes no histórico.");
+            }
         } else {
-            novoNo.ant = ultimo;
-            ultimo = novoNo;
+            JOptionPane.showMessageDialog(null, "Opção inválida.");
         }
-        if (indice == 0)
-            primeiro = novoNo;
-        else
-            novoNo.ant.prox = novoNo;
-        numero_nos++;
     }
 
     public void excluiNo(int indice) {
@@ -71,6 +73,13 @@ public class ListaDupla {
         numero_nos--;
     }
 
+    public NoMusicaDuplo pegarNo(int indice) {
+        NoMusicaDuplo temp_no = primeiro;
+        for (int i = 0; (i < indice) && (temp_no != null); i++)
+            temp_no = temp_no.prox;
+        return temp_no;
+    }
+
     public String ExibeLista() {
         StringBuilder valores = new StringBuilder("Histórico:\n");
         NoMusicaDuplo temp_no = primeiro;
@@ -81,15 +90,7 @@ public class ListaDupla {
         return valores.toString();
     }
 
-    public NoMusicaDuplo getPrimeiro() {
-        return primeiro;
-    }
-
     public NoMusicaDuplo getUltimo() {
         return ultimo;
-    }
-
-    public int getNumero_nos() {
-        return numero_nos;
     }
 }

@@ -18,7 +18,6 @@ public class ListaEncadeada {
     }
 
     public void insereNo_fim(NoMusica novoNo) {
-
         novoNo.prox = null;
         if (primeiro == null)
             primeiro = novoNo;
@@ -28,68 +27,30 @@ public class ListaEncadeada {
         numero_nos++;
     }
 
+    public void adicionarMusica(String titulo, String artista, int duracao) {
+        Musica nova = new Musica(titulo, artista, duracao);
+        insereNo_fim(new NoMusica(nova));
+        JOptionPane.showMessageDialog(null, "Música adicionada à fila!");
+    }
+
+    public void tocarProximaMusica(ListaDupla historico) {
+        try {
+            Musica ultimaMusica = getPrimeiro().getMusica();
+            historico.insereNo(new NoMusicaDuplo(ultimaMusica));
+            excluiNo(ultimaMusica.getTitulo());
+            JOptionPane.showMessageDialog(null, "Tocando: \n" + ultimaMusica);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "A lista de reprodução está vazia!");
+        }
+    }
+
     public void insereNo_inicio(NoMusica novoNo) {
         novoNo.prox = primeiro;
-        if (primeiro == null && ultimo == null) //Só tem um elemento na lista
-        {
+        if (primeiro == null && ultimo == null) {
             ultimo = novoNo;
         }
         primeiro = novoNo;
         numero_nos++;
-    }
-
-    int ContarNos() {
-        int tamanho = 0;
-        NoMusica temp_no = primeiro;
-        while (temp_no != null) {
-            tamanho++;
-            temp_no = temp_no.prox;
-        }
-        return tamanho;
-    }
-
-    public void insereNo_posicao(NoMusica novoNo, int posicao) {
-        NoMusica temp_no = primeiro;
-        int numero_nos = ContarNos();
-        int pos_aux;
-        if (posicao == 0) {
-            novoNo.prox = primeiro;
-            if (primeiro == ultimo) {
-                ultimo = novoNo;
-            }
-            primeiro = novoNo;
-        } else {
-            if (posicao <= numero_nos) {
-                pos_aux = 1;
-                while (temp_no != null && posicao > pos_aux) {
-                    temp_no = temp_no.prox;
-                    pos_aux++;
-                }
-                novoNo.prox = temp_no.prox;
-                temp_no.prox = novoNo;
-            } else {
-                if (posicao > numero_nos) {
-                    ultimo.prox = novoNo;
-                    ultimo = novoNo;
-                }
-            }
-        }
-    }
-
-
-    public NoMusica buscaNo(String titulo) {
-        int i = 0;
-        NoMusica temp_no = primeiro;
-        while (temp_no != null) {
-            if (temp_no.musica.getTitulo().equals(titulo)) {
-                JOptionPane.showMessageDialog(null,
-                        "Música " + temp_no.musica.getTitulo() + " posição " + i);
-                return temp_no;
-            }
-            i++;
-            temp_no = temp_no.prox;
-        }
-        return null;
     }
 
     public void excluiNo(String titulo) {
@@ -123,14 +84,6 @@ public class ListaEncadeada {
         }
 
         return saida.toString();
-    }
-
-    public int getNumero_nos() {
-        return numero_nos;
-    }
-
-    public NoMusica getUltimo() {
-        return ultimo;
     }
 
     public NoMusica getPrimeiro() {

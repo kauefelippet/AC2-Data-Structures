@@ -52,27 +52,13 @@ public class AC2Parte2 {
                         JOptionPane.showMessageDialog(null, "Duração inválida.");
                         break;
                     }
-
-                    Musica nova = new Musica(titulo, artista, duracao);
-                    listaReproducao.insereNo_fim(new NoMusica(nova));
-                    JOptionPane.showMessageDialog(null, "Música adicionada à fila!");
+                    listaReproducao.adicionarMusica(titulo, artista, duracao);
                 }
 
-                case 1 -> {
-                    try {
-                        Musica ultimaMusica = listaReproducao.getPrimeiro().getMusica();
-                        historico.insereNo(new NoMusicaDuplo(ultimaMusica));
-                        listaReproducao.excluiNo(ultimaMusica.getTitulo());
+                case 1 -> listaReproducao.tocarProximaMusica(historico);
 
-                        JOptionPane.showMessageDialog(null, "Tocando: \n" + ultimaMusica);
-                    } catch (Exception e) {
-                        JOptionPane.showMessageDialog(null, "A lista de reprodução está vazia!");
-                    }
-                }
-
-                case 2 -> {
-                    JOptionPane.showMessageDialog(null, "Fila de reprodução (Próximas):\n" + listaReproducao.exibeLista());
-                }
+                case 2 ->
+                        JOptionPane.showMessageDialog(null, "Fila de reprodução (Próximas):\n" + listaReproducao.exibeLista());
 
                 case 3 -> {
                     try {
@@ -82,36 +68,12 @@ public class AC2Parte2 {
                     }
                 }
 
-                case 4 -> {
-                    JOptionPane.showMessageDialog(null, historico.ExibeLista());
-                }
+                case 4 -> JOptionPane.showMessageDialog(null, historico.ExibeLista());
 
                 case 5 -> {
                     String escolha = JOptionPane.showInputDialog("Digite [A] para anterior ou [P] para próxima:");
-                    if (escolha == null) break;
-
-                    if (escolha.equalsIgnoreCase("A")) {
-                        if (historico.getNumero_nos() < 2) {
-                            JOptionPane.showMessageDialog(null, "Não há músicas anteriores no histórico.");
-                            break;
-                        }
-                        Musica musica = historico.getUltimo().getMusica();
-                        historico.excluiNo(historico.getNumero_nos() - 1);
-                        listaReproducao.insereNo_inicio(new NoMusica(musica));
-
-                        JOptionPane.showMessageDialog(null, "Música anterior:\n" + historico.getUltimo().getMusica());
-                    } else if (escolha.equalsIgnoreCase("P")) {
-                        try {
-                            Musica proximaMusica = listaReproducao.getPrimeiro().getMusica();
-                            historico.insereNo(new NoMusicaDuplo(proximaMusica));
-                            listaReproducao.excluiNo(proximaMusica.getTitulo());
-
-                            JOptionPane.showMessageDialog(null, "Próxima música:\n" + historico.getUltimo().getMusica());
-                        } catch (Exception e) {
-                            JOptionPane.showMessageDialog(null, "Não há músicas seguintes no histórico.");
-                        }
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Opção inválida.");
+                    if (escolha != null) {
+                        historico.navegarHistorico(listaReproducao, escolha);
                     }
                 }
 
